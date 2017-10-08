@@ -16,6 +16,9 @@ export default class Peer extends EventEmitter {
       this.child = ChildProcess.fork(`${__dirname}/module/torrentWorker`, [this.magnet])
 
       this.child.on('message', (message) => this.handleMessage(JSON.parse(message)))
+      this.child.on('close', (code) => this.handleMessage({
+        type: code === 0 ? 'done' : 'error'
+      }))
     } else {
       this.emit('err', {
         code: 404,

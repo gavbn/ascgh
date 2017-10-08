@@ -25,6 +25,7 @@ export default class Torrent {
 
     this.peers[peer.uid].on('done', (peer) => this.handlePeerDone(peer))
     this.peers[peer.uid].on('stop', (peer) => this.handlePeerStop(peer))
+    this.peers[peer.uid].on('error', (peer) => this.handlePeerError(peer))
     return this.peers[peer.uid]
   }
 
@@ -50,6 +51,11 @@ export default class Torrent {
         this.cleanup(peer)
       })
     }
+  }
+
+  handlePeerError (peer) {
+    this.log.error(`Unable to download ${peer.magnet}`)
+    delete this.peers[peer.uid]
   }
 
   cleanup (peer) {
