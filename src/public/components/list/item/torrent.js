@@ -59,6 +59,14 @@ export default class TorrentListItem extends React.Component {
     return Math.floor(percent * 100) + '%'
   }
 
+  getSeedNum (seed) {
+    if (seed >= 100) {
+      return '99+'
+    }
+
+    return seed
+  }
+
   render () {
     const itemStyle = Object.assign({}, style.item, !this.props.color ? style.itemColor : {})
     const metadataStyle = Object.assign({}, style.metadata, this.state.mobile ? style.metadataMobile : {})
@@ -71,7 +79,7 @@ export default class TorrentListItem extends React.Component {
         <span className="metadata" style={metadataStyle}>
           <span className="size" style={style.size}>{this.getSizeItem(this.props.peer.metadata.size)}</span>
           <span className="seed" style={style.seed}>
-            {this.props.peer.metadata.seed}
+            {this.getSeedNum(this.props.peer.metadata.seed)}
             <HeartIcon style={style.seedIcon}/>
           </span>
           <span className="sdown" style={style.sdown}>
@@ -112,7 +120,7 @@ TorrentListItem.defaultProps = {
       sup: 250,
       down: 402557,
       up: 4028557,
-      seed: 17,
+      seed: 1700,
       progress: 0.5458,
       timeRemaining: 1404705
     },
@@ -150,7 +158,7 @@ const style = {
   seed: {
     flex: '2',
     textAlign: 'right',
-    minWidth: '50px',
+    minWidth: '55px',
     marginRight: '10px'
   },
   seedIcon: {
