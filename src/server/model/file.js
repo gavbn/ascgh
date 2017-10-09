@@ -47,6 +47,7 @@ export default class File extends EventEmitter {
 
   watchChange (eventType, filename) {
     this.initMetadata()
+    this.emit('change')
   }
 
   fullPath () {

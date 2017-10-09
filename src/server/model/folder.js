@@ -14,8 +14,7 @@ export default class Folder extends File {
 
   initManualWatch (timeout) {
     setInterval(() => {
-      this.initMetadata()
-      this.initFolder()
+      this.watchChange(null, null)
     }, timeout)
   }
 
@@ -55,6 +54,7 @@ export default class Folder extends File {
   watchChange (eventType, filename) {
     this.initMetadata()
     this.initFolder()
+    this.emit('change')
   }
 
   handleChildRemove (child) {

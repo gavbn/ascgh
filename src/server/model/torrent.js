@@ -26,6 +26,7 @@ export default class Torrent {
     this.peers[peer.uid].on('done', (peer) => this.handlePeerDone(peer))
     this.peers[peer.uid].on('stop', (peer) => this.handlePeerStop(peer))
     this.peers[peer.uid].on('error', (peer) => this.handlePeerError(peer))
+    this.peers[peer.uid].on('download', (peer) => this.emit('download', peer))
     return this.peers[peer.uid]
   }
 
