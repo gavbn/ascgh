@@ -2,6 +2,7 @@ import React from 'react'
 import List from '@react-mdc/list'
 import $ from 'jquery'
 
+import Notify from '../../notification'
 import Color from '../../../color'
 
 import { ArrowIcon, HeartIcon } from '../../image/svg'
@@ -12,7 +13,9 @@ export default class TorrentListItem extends React.Component {
   constructor (props) {
     super(props)
 
-    this.state = {}
+    this.state = {
+      updateInterval: null
+    }
     this.initState(props)
   }
 
@@ -28,15 +31,45 @@ export default class TorrentListItem extends React.Component {
 
   componentWillMount () {
     $(window).on('resize', (event) => this.handleWindowResize())
+    this.update()
+    this.setState({
+      updateInterval: setInterval(() => this.update(), 2000)
+    })
   }
 
   componentWillUnmount () {
     $(window).off('resize', (event) => this.handleWindowResize())
+    clearInterval(this.state.updateInterval)
+    this.setState({
+      updateInterval: null
+    })
   }
 
   handleWindowResize () {
     this.setState({
       mobile: window.innerWidth <= 650
+    })
+  }
+
+  update () {
+    $.ajax({
+      method: 'GET',
+      url: this.props.peer.url,
+      success: (response) => {
+        this.setState({
+          peer: response
+        })
+      }
+    }).fail((response) => {
+      let text = response.responseJSON.err
+
+      Notify({
+        type: 'error',
+        title: `Failed to fetch peer ${this.peer.uid}`,
+        content: (
+          <p>{text}</p>
+        )
+      })
     })
   }
 
@@ -65,6 +98,14 @@ export default class TorrentListItem extends React.Component {
     }
 
     return seed
+  }
+
+  handleRemove () {
+    this.props.onRemove()
+    clearInterval(this.state.updateInterval)
+    this.setState({
+      updateInterval: null
+    })
   }
 
   render () {
@@ -100,7 +141,7 @@ export default class TorrentListItem extends React.Component {
         </span>
         <List.Item.EndDetail style={style.endDetail}>
           <TorrentToolbox
-            onRemove={ () => this.props.onRemove() }
+            onRemove={ () => this.handleRemove() }
             peer={this.props.peer}/>
         </List.Item.EndDetail>
       </List.Item>
