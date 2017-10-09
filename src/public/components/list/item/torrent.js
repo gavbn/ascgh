@@ -21,7 +21,8 @@ export default class TorrentListItem extends React.Component {
 
   initState (props) {
     Object.assign(this.state, {
-      mobile: window.innerWidth <= 650
+      mobile: window.innerWidth <= 650,
+      peer: props.peer
     })
   }
 
@@ -54,7 +55,7 @@ export default class TorrentListItem extends React.Component {
   update () {
     $.ajax({
       method: 'GET',
-      url: this.props.peer.url,
+      url: this.state.peer.url,
       success: (response) => {
         this.setState({
           peer: response
@@ -115,34 +116,34 @@ export default class TorrentListItem extends React.Component {
     return (
       <List.Item className="peer" style={itemStyle}>
         <span className="name" style={style.name}>
-          {this.props.peer.metadata.name}
+          {this.state.peer.metadata.name}
         </span>
         <span className="metadata" style={metadataStyle}>
-          <span className="size" style={style.size}>{this.getSizeItem(this.props.peer.metadata.size)}</span>
+          <span className="size" style={style.size}>{this.getSizeItem(this.state.peer.metadata.size)}</span>
           <span className="seed" style={style.seed}>
-            {this.getSeedNum(this.props.peer.metadata.seed)}
+            {this.getSeedNum(this.state.peer.metadata.seed)}
             <HeartIcon style={style.seedIcon}/>
           </span>
           <span className="sdown" style={style.sdown}>
-            {this.getSpeedItem(this.props.peer.metadata.sdown)}
+            {this.getSpeedItem(this.state.peer.metadata.sdown)}
             <ArrowIcon.Down style={style.sdownIcon}/>
           </span>
           <span className="sup" style={style.sup}>
-            {this.getSpeedItem(this.props.peer.metadata.sup)}
+            {this.getSpeedItem(this.state.peer.metadata.sup)}
             <ArrowIcon.Up style={style.supIcon}/>
           </span>
         </span>
         <span className="progress" style={style.progress}>
-          {this.getProgressItem(this.props.peer.metadata.progress)}
+          {this.getProgressItem(this.state.peer.metadata.progress)}
           <RadialProgress
             style={style.progressRadial}
             displayText={false}
-            value={this.props.peer.metadata.progress} />
+            value={this.state.peer.metadata.progress} />
         </span>
         <List.Item.EndDetail style={style.endDetail}>
           <TorrentToolbox
             onRemove={ () => this.handleRemove() }
-            peer={this.props.peer}/>
+            peer={this.state.peer}/>
         </List.Item.EndDetail>
       </List.Item>
     )
