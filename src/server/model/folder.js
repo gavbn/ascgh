@@ -20,7 +20,8 @@ export default class Folder extends File {
   }
 
   initFolder () {
-    this.childs = []
+    var oldChilds = this.childs
+    var newChilds = []
     var childs = []
     try {
       childs = fs.readdirSync(this.fullPath())
@@ -39,8 +40,16 @@ export default class Folder extends File {
         continue
       }
 
-      this.addChild(child)
+      let index = oldChilds.findIndex((oldchild) => { console.log(oldchild.name, child.name); return oldchild.name === child.name})
+      if (index !== -1) {
+        oldChilds[index]._size = child._size
+        newChilds.push(oldChilds[index])
+      } else {
+        newChilds.push(child)
+      }
     }
+
+    this.childs = newChilds
   }
 
   watchChange (eventType, filename) {
