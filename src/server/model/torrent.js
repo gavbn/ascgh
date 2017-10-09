@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import { spawn } from 'child_process'
 import Delogger from 'delogger'
+import EventEmitter from 'events'
 
 import Peer from './peer'
 import Config from './config'
@@ -8,8 +9,10 @@ import Folder from '../model/folder'
 
 const config = new Config({sync: true})
 
-export default class Torrent {
+export default class Torrent extends EventEmitter {
   constructor (props) {
+    super(props)
+
     props = props || {}
     this.baseFolder = props.baseFolder || new Folder(`/${__dirname}/${config.files.path}`, '')
     this.peers = {}
